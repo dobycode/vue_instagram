@@ -4,72 +4,92 @@
       <li @click="step--">Cancel</li>
     </ul>
     <ul class="header-button-right">
-      <li @click="step++">Next</li>
+      <li v-if="step == 1" @click="step++">Next</li>
+      <li v-if="step == 2" @click="publish">Write</li>
     </ul>
     <img src="./assets/logo.png" class="logo" />
   </div>
 
-  <Container :postData="postData" :step="step" :image="image" />
+  <Container @write="myWriting = $event" :postData="postData" :step="step" :image="image" />
 
   <button @click="more">더보기</button>
 
   <div class="footer">
     <ul class="footer-button-plus">
-      <input @change="upload" accept="image/*"  multiple type="file" id="file" class="inputfile" />
+      <input
+        @change="upload"
+        accept="image/*"
+        multiple
+        type="file"
+        id="file"
+        class="inputfile"
+      />
       <label for="file" class="input-plus">+</label>
     </ul>
   </div>
-
-
 </template>
 
 <script>
-
-import Container from './components/Container';
-import Data from './post.js';
-import axios from 'axios';
+import Container from "./components/Container";
+import Data from "./post.js";
+import axios from "axios";
 
 export default {
   name: "App",
-  data(){
+  data() {
     return {
       postData: Data,
       cntmore: 0,
       step: 0,
-      image: '',
-    }
+      image: "",
+      myWriting : '',
+    };
   },
-  watch :{
+  watch: {
     step(a) {
-      if(a > 2){
-        this.step = 2
+      if (a > 2) {
+        this.step = 2;
+      } else if (a < 0) {
+        this.step = 0;
       }
-      else if(a < 0) {
-        this.step = 0
-      }
-    }
+    },
   },
   components: {
-    Container
+    Container,
   },
   methods: {
     more() {
-      axios.get(`https://codingapple1.github.io/vue/more${this.cntmore}.json`)
-      .then((result)=>{
-        console.log(result.data)
-        this.postData.push(result.data);
-        this.cntmore++;
-      })
+      axios
+        .get(`https://codingapple1.github.io/vue/more${this.cntmore}.json`)
+        .then((result) => {
+          console.log(result.data);
+          this.postData.push(result.data);
+          this.cntmore++;
+        });
     },
-    upload(e){
+    upload(e) {
       const file = e.target.files;
-      console.log(file[0])
+      console.log(file[0]);
       let url = URL.createObjectURL(file[0]);
       console.log(url);
       this.image = url;
       this.step++;
     },
-  }
+    publish() {
+      var myPost = {
+        name: "Kim Hyun",
+        userImage: "https://placeimg.com/100/100/arch",
+        postImage: this.image,
+        likes: 36,
+        date: "May 15",
+        liked: false,
+        content: this.myWriting,
+        filter: "perpetua",
+      };
+      this.postData.unshift(myPost); //unshift > 배열에 내가 추가한 object를 맨앞으로 밀어넣기
+      this.step = 0;
+    },
+  },
 };
 </script>
 
