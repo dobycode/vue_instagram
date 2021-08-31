@@ -74,7 +74,7 @@ export default {
       console.log(url);
       this.image = url;
       this.step++;
-    },
+    },  
     publish() {
       var myPost = {
         name: "Kim Hyun",

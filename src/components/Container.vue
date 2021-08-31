@@ -7,11 +7,9 @@
     <div v-if="step == 1">
       <div class="upload-image" :style="`background-image:url(${image})`"></div>
       <div class="filters">
-        <div class="filter-1"></div>
-        <div class="filter-1"></div>
-        <div class="filter-1"></div>
-        <div class="filter-1"></div>
-        <div class="filter-1"></div>
+        <FilterBox :filter="filter" :image="image" v-for="filter in instagramFilter" :key="filter">
+          {{filter}}
+        </FilterBox> <!-- filter로 반복문 돌리고 이 객체를 props전송 -->
       </div>
     </div>
 
@@ -27,11 +25,14 @@
 
 <script>
 import Post from "./Post";
+import FilterBox from "./FilterBox";
+import filter from "../filter.js"
 
 export default {
   name: "Container",
   components: {
     Post,
+    FilterBox,
   },
   props: {
     postData: [Array, Object],
@@ -40,7 +41,7 @@ export default {
   },
   data() {
     return {
-      
+      instagramFilter: filter,
     }
   },
 };
